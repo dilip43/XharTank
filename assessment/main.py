@@ -203,6 +203,102 @@ class XharkTankAssessment(TestCase):
         self.assertTrue(self.checkKey(data,"id"))
         self.assertEqual(1,len(data))
 
+# unitTesting log test case
+
+    @pytest.mark.order(6)
+    def test_3_get_single_pitch(self):
+        """Get a single Pitch provided id and Verify that response is as per the API Spec and HTTP Status is OK"""
+        endpoint = 'pitches'
+        body = {
+            "entrepreneur": "Yakshit#2",
+            "pitchTitle": "Sample Title #2",
+            "pitchIdea" : "Sample Idea #2",
+            "askAmount" : 1000000000,
+            "equity": 25.3
+        }
+
+        response = self.post_api(endpoint, json.dumps(body))
+        self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
+        data = self.decode_and_load_json(response)
+        self.assertTrue(self.checkKey(data,"id"))
+        self.assertEqual(1,len(data))
+        endpoint = 'pitches/{}'.format(data["id"])
+        response = self.get_api(endpoint)
+        self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
+
+    @pytest.mark.order(7)
+    def test_8_post_pitch_invalid_data(self):
+        """Post a new Pitch and Verify that response is HTTP Status Bad Request #3"""
+        endpoint = 'pitches'
+        body = {
+            "entrepreneur": "Yakshit#5",
+            "pitchTitle": "Sample Title #5",
+            "pitchIdea" : "Sample Idea #5",
+            "askAmount" : 1000000000,
+            "equity": 1000
+        }
+        response = self.post_api(endpoint, json.dumps(body))
+        self.assertIn(response.status_code, self.NEGATIVE_STATUS_CODES)
+
+    @pytest.mark.order(8)
+    def test_12_post_offer_invalid_data(self):
+        """Post a new Offer provided pitch id  and Verify that response is HTTP Status Bad Request #3"""
+        endpoint = 'pitches'
+        body = {
+            "entrepreneur": "Yakshit#8",
+            "pitchTitle": "Sample Title #8",
+            "pitchIdea" : "Sample Idea #8",
+            "askAmount" : 1000000000,
+            "equity": 25.3
+        }
+
+        response = self.post_api(endpoint, json.dumps(body))
+        self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
+        data = self.decode_and_load_json(response)
+        self.assertTrue(self.checkKey(data,"id"))
+        endpoint = 'pitches/{}/makeOffer'.format(data["id"])
+        body = {
+            "investor": "Anupam Mittal",
+            "amount" : 1000000000,
+            "equity": 1000,
+            "comment":"A new concept in the ed-tech market. I can relate with the importance of the Learn By Doing philosophy. Keep up the Good Work! Definitely interested to work with you to scale the vision of the company!"
+        }
+        response = self.post_api(endpoint, json.dumps(body))
+        self.assertIn(response.status_code, self.NEGATIVE_STATUS_CODES)
+
+
+    @pytest.mark.order(9)
+    def test_14_get_single_pitch_with_offer(self):
+        """Get a single Pitch provided id and Verify that response is as per the API Spec and HTTP Status is OK #2"""
+        endpoint = 'pitches'
+        body = {
+            "entrepreneur": "Yakshit#9",
+            "pitchTitle": "Sample Title #9",
+            "pitchIdea" : "Sample Idea #9",
+            "askAmount" : 1000000000,
+            "equity": 25.3
+        }
+
+        response = self.post_api(endpoint, json.dumps(body))
+        self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
+        data = self.decode_and_load_json(response)
+        pitchId = data["id"]
+        self.assertTrue(self.checkKey(data,"id"))
+        endpoint = 'pitches/{}/makeOffer'.format(data["id"])
+        offerBody = {
+            "investor": "Anupam Mittal",
+            "amount" : 1000000000,
+            "equity": 25.3,
+            "comment":"A new concept in the ed-tech market. I can relate with the importance of the Learn By Doing philosophy. Keep up the Good Work! Definitely interested to work with you to scale the vision of the company!"
+        }
+        response = self.post_api(endpoint, json.dumps(offerBody))
+        self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
+        data = self.decode_and_load_json(response)
+        self.assertTrue(self.checkKey(data,"id"))
+        endpoint = 'pitches/{}'.format(pitchId)
+        response = self.get_api(endpoint)
+        self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
+
 
 if __name__ == '__main__':
     unittest.main()

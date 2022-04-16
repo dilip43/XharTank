@@ -22,7 +22,14 @@ app.get("/pitches/:pitch_id", async (req, res) => {
       .select({ __v: 0, createdAt: 0, updatedAt: 0 })
       .populate("offers");
     fpitch = JSON.parse(JSON.stringify(fpitch).replaceAll("_id", "id"));
-
+    fpitch = {
+      id: fpitch.id.toString(),
+      entrepreneur: fpitch.entrepreneur,
+      pitchTitle: fpitch.pitchTitle,
+      askAmount: fpitch.askAmount,
+      equity: fpitch.equity,
+      offers: fpitch.offers,
+    };
     res.status(200).json(fpitch);
   } catch (e) {
     res.status(404).json({ error: "pitch not found" });
