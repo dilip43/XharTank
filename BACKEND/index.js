@@ -18,15 +18,22 @@ mongoose
     console.log("Error connecting to database" + err);
   });
 
+mongoose.set("toJSON", {
+  virtuals: true,
+  transform: (doc, converted) => {
+    delete converted._id;
+  },
+});
+
 app.get("/pitches/:pitch_id", async (req, res) => {
   try {
     var fpitch = await Pitch.findById(req.params.pitch_id)
       .select({ __v: 0, createdAt: 0, updatedAt: 0 })
       .populate("offers", { __v: 0 });
 
-    fpitch = JSON.parse(JSON.stringify(fpitch));
-    finalPitch = fptich.replaceAll("_id", "id");
-    res.status(200).json(finalPitch);
+    if (!pitches) return res.status(200).json([]);
+
+    res.status(200).json(fpitch);
   } catch (e) {
     console.log(e);
     return res.status(404).json({ error: "pitch not found" });
@@ -43,9 +50,7 @@ app.get("/pitches", async (req, res) => {
     if (!pitches) return res.status(200).json([]);
 
     sortPitches = pitches.sort((x, y) => y.timestamp - x.timestamp);
-    sortPitches = JSON.parse(
-      JSON.stringify(sortPitches).replaceAll("_id", "id")
-    );
+
     return res.status(200).json(sortPitches);
   } catch (e) {
     console.log("something went wrong: " + e);
