@@ -42,7 +42,11 @@ app.get("/pitches", async (req, res) => {
       {},
       { __v: 0, createdAt: 0, updatedAt: 0 }
     ).populate("offers");
+<<<<<<< HEAD
     // if (!pitches) return res.status(200).json({ error: "pitches not found" });
+=======
+     if (!pitches) return res.status(200).send([]);
+>>>>>>> 6990998897f0f3f71869e3ea28c937ec861a2954
     sortPitches = pitches.sort((x, y) => y.timestamp - x.timestamp);
     sortPitches = JSON.parse(
       JSON.stringify(sortPitches).replaceAll("_id", "id")
