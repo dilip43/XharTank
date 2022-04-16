@@ -9,8 +9,10 @@ app.use(express.json());
 
 mongoose
   .connect("mongodb://localhost:27017/xharktank")
-  .then(() => {
+  .then(async () => {
     console.log("connected to Mongo db database");
+    await Pitch.deleteMany({});
+    await Offer.deleteMany({});
   })
   .catch((err) => {
     console.log("Error connecting to database" + err);
@@ -21,17 +23,22 @@ app.get("/pitches/:pitch_id", async (req, res) => {
     var fpitch = await Pitch.findById(req.params.pitch_id)
       .select({ __v: 0, createdAt: 0, updatedAt: 0 })
       .populate("offers", { __v: 0 });
+
     fpitch = JSON.parse(JSON.stringify(fpitch).replaceAll("_id", "id"));
-    fpitch = {
-      id: fpitch.id.toString(),
-      entrepreneur: fpitch.entrepreneur,
-      pitchTitle: fpitch.pitchTitle,
-      askAmount: fpitch.askAmount,
-      equity: fpitch.equity,
-      offers: fpitch.offers,
-    };
+
+    // finalpitch = {
+    //   id: fpitch.id.toString(),
+    //   entrepreneur: fpitch.entrepreneur,
+    //   pitchTitle: fpitch.pitchTitle,
+    //   pitchIdea: fpitch.pitchIdea,
+    //   askAmount: fpitch.askAmount,
+    //   equity: fpitch.equity,
+    //   offers: fpitch.offers,
+    // };
+    console.log(fpitch);
     res.status(200).json(fpitch);
   } catch (e) {
+    console.log(e);
     res.status(404).json({ error: "pitch not found" });
   }
 });
@@ -41,9 +48,10 @@ app.get("/pitches", async (req, res) => {
     pitches = await Pitch.find(
       {},
       { __v: 0, createdAt: 0, updatedAt: 0 }
-    ).populate("offers");
-    // if (!pitches) return res.status(200).json({ error: "pitches not found" });
-     if (!pitches) return res.status(200).send([]);
+    ).populate("offers", { __v: 0 });
+
+    if (!pitches) return res.status(200).send([]);
+
     sortPitches = pitches.sort((x, y) => y.timestamp - x.timestamp);
     sortPitches = JSON.parse(
       JSON.stringify(sortPitches).replaceAll("_id", "id")

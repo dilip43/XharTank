@@ -207,7 +207,7 @@ class XharkTankAssessment(TestCase):
 # unitTesting log test case
 
     @pytest.mark.order(6)
-    def test_3_get_single_pitch(self):
+    def test_6_get_single_pitch(self):
         """Get a single Pitch provided id and Verify that response is as per the API Spec and HTTP Status is OK"""
         endpoint = 'pitches'
         body = {
@@ -228,7 +228,7 @@ class XharkTankAssessment(TestCase):
         self.assertIn(response.status_code, self.POSITIVE_STATUS_CODES)
 
     @pytest.mark.order(7)
-    def test_8_post_pitch_invalid_data(self):
+    def test_7_post_pitch_invalid_data(self):
         """Post a new Pitch and Verify that response is HTTP Status Bad Request #3"""
         endpoint = 'pitches'
         body = {
@@ -242,7 +242,7 @@ class XharkTankAssessment(TestCase):
         self.assertIn(response.status_code, self.NEGATIVE_STATUS_CODES)
 
     @pytest.mark.order(8)
-    def test_12_post_offer_invalid_data(self):
+    def test_8_post_offer_invalid_data(self):
         """Post a new Offer provided pitch id  and Verify that response is HTTP Status Bad Request #3"""
         endpoint = 'pitches'
         body = {
@@ -269,7 +269,7 @@ class XharkTankAssessment(TestCase):
 
 
     @pytest.mark.order(9)
-    def test_14_get_single_pitch_with_offer(self):
+    def test_9_get_single_pitch_with_offer(self):
         """Get a single Pitch provided id and Verify that response is as per the API Spec and HTTP Status is OK #2"""
         endpoint = 'pitches'
         body = {
