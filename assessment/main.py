@@ -24,25 +24,25 @@ class XharkTankAssessment(TestCase):
 
     ### Helper functions
     def get_api(self, endpoint):
-      
+
         response = requests.get(self.localhost + endpoint, headers=self.HEADERS,timeout=10)
         self.print_curl_request_and_response(response)
         return response
 
     def post_api(self, endpoint, body):
-       
+
         response = requests.post(self.localhost + endpoint, headers=self.HEADERS,timeout=10, data=body)
         self.print_curl_request_and_response(response)
         return response
 
     def print_curl_request_and_response(self, response):
-    
+
         if(response.status_code in self.POSITIVE_STATUS_CODES):
-         
+
             self.decode_and_load_json(response)
 
     def patch_api(self, endpoint, body):
-       
+
         response = self.http.patch(self.localhost + endpoint, headers = self.HEADERS,data = body)
         self.print_curl_request_and_response(response)
         return response
@@ -52,7 +52,7 @@ class XharkTankAssessment(TestCase):
             text_response = response.content.decode('utf-8')
             data = json.loads(text_response)
         except Exception as e:
-          
+
             logging.exception(str(e))
             return response
         return data
@@ -89,7 +89,7 @@ class XharkTankAssessment(TestCase):
         """Check if server is running on port 8081"""
         status = self.check_server("localhost",8081)
         self.assertTrue(status)
-            
+
 
     @pytest.mark.order(1)
     def test_1_get_all_pitches_when_empty_db(self):
@@ -152,6 +152,8 @@ class XharkTankAssessment(TestCase):
         self.assertEqual(7,len(data))
 
 
+
+
     @pytest.mark.order(4)
     def test_4_get_all_pitches_when_pitches_present_in_db(self):
         """Get all pitches and verify that it returns all pitches"""
@@ -200,7 +202,6 @@ class XharkTankAssessment(TestCase):
         data = self.decode_and_load_json(response)
         self.assertTrue(self.checkKey(data,"id"))
         self.assertEqual(1,len(data))
-
 
 
 if __name__ == '__main__':
