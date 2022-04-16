@@ -7,5 +7,5 @@
 # Eg:- For Python Flask Project
 #       export FLASK_APP=main.py
 #       flask run
-cd BACKEND
+cd ./BACKEND
 pm2 start index.js
