@@ -20,7 +20,7 @@ app.get("/pitches/:pitch_id", async (req, res) => {
   try {
     var fpitch = await Pitch.findById(req.params.pitch_id)
       .select({ __v: 0, createdAt: 0, updatedAt: 0 })
-      .populate("offers");
+      .populate("offers", { __v: 0 });
     fpitch = JSON.parse(JSON.stringify(fpitch).replaceAll("_id", "id"));
     fpitch = {
       id: fpitch.id.toString(),
@@ -42,6 +42,7 @@ app.get("/pitches", async (req, res) => {
       {},
       { __v: 0, createdAt: 0, updatedAt: 0 }
     ).populate("offers");
+    // if (!pitches) return res.status(200).json({ error: "pitches not found" });
     sortPitches = pitches.sort((x, y) => y.timestamp - x.timestamp);
     sortPitches = JSON.parse(
       JSON.stringify(sortPitches).replaceAll("_id", "id")

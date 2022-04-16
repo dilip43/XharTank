@@ -100,6 +100,7 @@ class XharkTankAssessment(TestCase):
         response_length = len(self.decode_and_load_json(response))
         self.assertEqual(0,response_length)
 
+
     @pytest.mark.order(2)
     def test_2_post_pitch(self):
         """Post a Pitch and verify that it returns id in the response"""
