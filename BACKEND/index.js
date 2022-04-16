@@ -49,9 +49,9 @@ app.get("/pitches", async (req, res) => {
 
     if (!pitches) return res.status(200).json([]);
 
-    sortPitches = pitches.sort((x, y) => y.timestamp - x.timestamp);
+    var result = pitches.reverse();
 
-    return res.status(200).json(sortPitches);
+    return res.status(200).json(rseult);
   } catch (e) {
     console.log("something went wrong: " + e);
     return res.status(404).json({ error: "pitch not found" });
