@@ -24,9 +24,9 @@ app.get("/pitches/:pitch_id", async (req, res) => {
       .select({ __v: 0, createdAt: 0, updatedAt: 0 })
       .populate("offers", { __v: 0 });
 
-    fpitch = JSON.parse(JSON.stringify(fpitch).replaceAll("_id", "id"));
-    console.log(fpitch);
-    res.status(200).json(fpitch);
+    fpitch = JSON.parse(JSON.stringify(fpitch));
+    finalPitch = fptich.replaceAll("_id", "id");
+    res.status(200).json(finalPitch);
   } catch (e) {
     console.log(e);
     return res.status(404).json({ error: "pitch not found" });
@@ -64,7 +64,7 @@ app.post("/pitches", (req, res) => {
     askAmount === null &&
     equity === null
   )
-    return res.status(204).json("Request body is empty");
+    return res.status(400).json("Request body is empty");
   else if (
     entrepreneur == "" ||
     entrepreneur === null ||
@@ -89,7 +89,7 @@ app.post("/pitches/:pitch_id/makeOffer", async (req, res) => {
   var { investor, amount, equity, comment } = req.body;
 
   if (investor == "" && amount === null && equity === null && comment == "")
-    return res.status(204).json("Request body is empty");
+    return res.status(400).json("Request body is empty");
   else if (
     investor == "" ||
     investor === null ||
