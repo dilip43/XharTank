@@ -25,21 +25,11 @@ app.get("/pitches/:pitch_id", async (req, res) => {
       .populate("offers", { __v: 0 });
 
     fpitch = JSON.parse(JSON.stringify(fpitch).replaceAll("_id", "id"));
-
-    // finalpitch = {
-    //   id: fpitch.id.toString(),
-    //   entrepreneur: fpitch.entrepreneur,
-    //   pitchTitle: fpitch.pitchTitle,
-    //   pitchIdea: fpitch.pitchIdea,
-    //   askAmount: fpitch.askAmount,
-    //   equity: fpitch.equity,
-    //   offers: fpitch.offers,
-    // };
     console.log(fpitch);
     res.status(200).json(fpitch);
   } catch (e) {
     console.log(e);
-    res.status(404).json({ error: "pitch not found" });
+    return res.status(404).json({ error: "pitch not found" });
   }
 });
 
@@ -50,16 +40,16 @@ app.get("/pitches", async (req, res) => {
       { __v: 0, createdAt: 0, updatedAt: 0 }
     ).populate("offers", { __v: 0 });
 
-    if (!pitches) return res.status(200).send([]);
+    if (!pitches) return res.status(200).json([]);
 
     sortPitches = pitches.sort((x, y) => y.timestamp - x.timestamp);
     sortPitches = JSON.parse(
       JSON.stringify(sortPitches).replaceAll("_id", "id")
     );
-    res.status(200).send(sortPitches);
+    return res.status(200).json(sortPitches);
   } catch (e) {
     console.log("something went wrong: " + e);
-    res.status(404).json({ error: "pitch not found" });
+    return res.status(404).json({ error: "pitch not found" });
   }
 });
 
@@ -74,7 +64,7 @@ app.post("/pitches", (req, res) => {
     askAmount === null &&
     equity === null
   )
-    return res.status(204).send("Request body is empty");
+    return res.status(204).json("Request body is empty");
   else if (
     entrepreneur == "" ||
     entrepreneur === null ||
@@ -86,11 +76,11 @@ app.post("/pitches", (req, res) => {
     equity === null ||
     equity > 100
   )
-    return res.status(400).send("invalid fields value");
+    return res.status(400).json("invalid fields value");
 
   var pitch = new Pitch(req.body);
   pitch.save((err, pitch) => {
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(400).json(err);
     return res.status(201).json({ id: pitch.id });
   });
 });
@@ -99,7 +89,7 @@ app.post("/pitches/:pitch_id/makeOffer", async (req, res) => {
   var { investor, amount, equity, comment } = req.body;
 
   if (investor == "" && amount === null && equity === null && comment == "")
-    return res.status(204).send("Request body is empty");
+    return res.status(204).json("Request body is empty");
   else if (
     investor == "" ||
     investor === null ||
@@ -109,13 +99,13 @@ app.post("/pitches/:pitch_id/makeOffer", async (req, res) => {
     comment == "" ||
     comment === null
   )
-    return res.status(400).send("invalid fields value");
+    return res.status(400).json("invalid fields value");
 
   pitch = await Pitch.findById(req.params.pitch_id);
   offer = req.body;
   var counterOffer = new Offer(offer);
   counterOffer.save((err, counterOffer) => {
-    if (err) return res.status(404).send("pitch not found");
+    if (err) return res.status(404).json("pitch not found");
     else {
       pitch.offers.push(counterOffer.id);
       pitch.save();
