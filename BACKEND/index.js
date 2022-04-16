@@ -51,7 +51,7 @@ app.get("/pitches", async (req, res) => {
 
     var result = pitches.reverse();
 
-    return res.status(200).json(rseult);
+    return res.status(200).json(result);
   } catch (e) {
     console.log("something went wrong: " + e);
     return res.status(404).json({ error: "pitch not found" });
